@@ -1,5 +1,5 @@
-pub mod tool_id_error;
-pub use super::tool_id_error::ToolIdError;
+pub mod equipment_id_error;
+pub use super::equipment_id_error::EquipmentIdError;
 
 mod tests;
 
@@ -7,27 +7,27 @@ use std::fmt;
 use std::fmt::{Display, Formatter};
 
 #[derive(PartialEq, PartialOrd)]
-pub struct ToolId {
+pub struct EquipmentId {
     prefix: char,
     segments: Vec<String>,
     seg_delimiter: char,
     group_len: usize,
 }
 
-impl ToolId {
+impl EquipmentId {
     pub fn new(
         prefix: char,
         seg_delimiter: char,
         group_len: usize,
         id: &str,
-    ) -> Result<Self, ToolIdError> {
+    ) -> Result<Self, EquipmentIdError> {
         if id.is_empty() {
-            return Err(ToolIdError::EmptyIdString);
+            return Err(EquipmentIdError::EmptyIdString);
         }
 
         let prefix_candidate = id.chars().nth(0).unwrap();
         if prefix_candidate != prefix {
-            return Err(ToolIdError::InvalidIdString(String::from(
+            return Err(EquipmentIdError::InvalidIdString(String::from(
                 "mismatching prefix",
             )));
         }
@@ -40,16 +40,20 @@ impl ToolId {
             .collect();
 
         if segments.is_empty() {
-            return Err(ToolIdError::InvalidIdString(String::from("no code groups")));
+            return Err(EquipmentIdError::InvalidIdString(String::from(
+                "no code groups",
+            )));
         }
 
         if segments[0].is_empty() {
-            return Err(ToolIdError::InvalidIdString(String::from("no code groups")));
+            return Err(EquipmentIdError::InvalidIdString(String::from(
+                "no code groups",
+            )));
         }
 
         for s in segments.clone() {
             if s.len() != group_len {
-                return Err(ToolIdError::InvalidIdString(String::from(
+                return Err(EquipmentIdError::InvalidIdString(String::from(
                     "code group deviates in length",
                 )));
             }
@@ -64,7 +68,7 @@ impl ToolId {
     }
 }
 
-impl Display for ToolId {
+impl Display for EquipmentId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let delim = String::from(self.seg_delimiter);
         let prefix = String::from(self.prefix);
@@ -75,7 +79,7 @@ impl Display for ToolId {
     }
 }
 
-impl Default for ToolId {
+impl Default for EquipmentId {
     fn default() -> Self {
         Self {
             prefix: '=',

@@ -1,2 +1,2 @@
-pub mod tool_id;
-pub use crate::tool_id::*;
+pub mod equipment_id;
+pub use crate::equipment_id::*;
