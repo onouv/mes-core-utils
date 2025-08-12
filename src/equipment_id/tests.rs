@@ -39,3 +39,17 @@ fn lack_of_code_groups_cannot_be_created() {
 fn wrong_prefix_cannot_be_created() {
     EquipmentId::new('/', 3, "+001.001").unwrap_or_else(|error| panic!("{}", error));
 }
+
+#[test]
+fn equals_should_compare_equal() {
+    let id1 = EquipmentId::new('.', 3, "-120.010.001").unwrap();
+    let id2 = EquipmentId::new('.', 3, "-120.010.001").unwrap();
+    assert!(id1 == id2);
+}
+
+#[test]
+fn unequals_should_compare_not_equal() {
+    let id1 = EquipmentId::new('.', 3, "-120.010.001").unwrap();
+    let id2 = EquipmentId::new('.', 3, "-120.010.002").unwrap();
+    assert!(id1 != id2);
+}

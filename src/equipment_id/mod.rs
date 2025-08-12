@@ -23,7 +23,7 @@ impl EquipmentId {
 
 impl Display for EquipmentId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        return self.item_id.fmt(f);
+        self.item_id.fmt(f)
     }
 }
 
@@ -40,12 +40,12 @@ impl Default for EquipmentId {
         )
         .unwrap();
 
-        return Self { item_id };
+        Self { item_id }
     }
 }
 
 impl Debug for EquipmentId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        return self.item_id.fmt(f);
+        self.item_id.fmt(f)
     }
 }
