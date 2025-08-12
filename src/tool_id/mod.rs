@@ -1,4 +1,8 @@
-use crate::tool_id_error::*;
+pub mod tool_id_error;
+pub use super::tool_id_error::ToolIdError;
+
+mod tests;
+
 use std::fmt;
 use std::fmt::{Display, Formatter};
 
@@ -38,6 +42,11 @@ impl ToolId {
         if segments.is_empty() {
             return Err(ToolIdError::InvalidIdString(String::from("no code groups")));
         }
+
+        if segments[0].is_empty() {
+            return Err(ToolIdError::InvalidIdString(String::from("no code groups")));
+        }
+
         for s in segments.clone() {
             if s.len() != group_len {
                 return Err(ToolIdError::InvalidIdString(String::from(
@@ -74,58 +83,5 @@ impl Default for ToolId {
             seg_delimiter: '.',
             group_len: 3,
         }
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    #[test]
-    fn can_be_created() {
-        let seg_delimiter = '.';
-        let prefix = '+';
-        let group_len = 4;
-        let candidate = "+0100.0001";
-        let tool_id = ToolId::new(prefix, seg_delimiter, group_len, candidate)
-            .unwrap_or_else(|error| panic!("{}", error));
-
-        println!("{}", tool_id);
-
-        let id = format!("{}", tool_id);
-
-        assert_eq!(id, candidate);
-    }
-
-    #[test]
-    #[should_panic(expected = "code group deviates in length")]
-    fn wrong_group_length_cannot_be_created() {
-        let seg_delimiter = '.';
-        let prefix = '+';
-        let group_len = 4;
-        let candidate = "+0100.001";
-        ToolId::new(prefix, seg_delimiter, group_len, candidate)
-            .unwrap_or_else(|error| panic!("{}", error));
-    }
-
-    #[test]
-    #[should_panic(expected = "code group deviates in length")]
-    fn wrong_delimiter_cannot_be_created() {
-        let seg_delimiter = '*';
-        let prefix = '+';
-        let group_len = 4;
-        let candidate = "+0100.0001";
-        ToolId::new(prefix, seg_delimiter, group_len, candidate)
-            .unwrap_or_else(|error| panic!("{}", error));
-    }
-
-    #[test]
-    #[should_panic(expected = "code group deviates in length")]
-    fn lack_of_code_groups_canot_be_created() {
-        let seg_delimiter = '.';
-        let prefix = '+';
-        let group_len = 4;
-        let candidate = "+";
-        ToolId::new(prefix, seg_delimiter, group_len, candidate)
-            .unwrap_or_else(|error| panic!("{}", error));
     }
 }
