@@ -1,91 +1,51 @@
-pub mod equipment_id_error;
-pub use super::equipment_id_error::EquipmentIdError;
-
 mod tests;
 
 use std::fmt;
-use std::fmt::{Display, Formatter};
+use std::fmt::{Debug, Display, Formatter};
+
+use super::plant_item_id_error::*;
+use crate::plant_item_id::{ID_GROUP_LEN_DEFAULT, ID_SEGMENT_DELIMITER_DEFAULT, PlantItemId};
+
+pub const EQUIPMENT_ID_PREFIX: char = '-';
 
 #[derive(PartialEq, PartialOrd)]
 pub struct EquipmentId {
-    prefix: char,
-    segments: Vec<String>,
-    seg_delimiter: char,
-    group_len: usize,
+    item_id: PlantItemId,
 }
 
 impl EquipmentId {
-    pub fn new(
-        prefix: char,
-        seg_delimiter: char,
-        group_len: usize,
-        id: &str,
-    ) -> Result<Self, EquipmentIdError> {
-        if id.is_empty() {
-            return Err(EquipmentIdError::EmptyIdString);
-        }
+    pub fn new(seg_delimiter: char, group_len: usize, id: &str) -> Result<Self, PlantItemIdError> {
+        let item_id = PlantItemId::new(EQUIPMENT_ID_PREFIX, seg_delimiter, group_len, id)?;
 
-        let prefix_candidate = id.chars().nth(0).unwrap();
-        if prefix_candidate != prefix {
-            return Err(EquipmentIdError::InvalidIdString(String::from(
-                "mismatching prefix",
-            )));
-        }
-
-        let stripped = id.trim_matches(prefix);
-        //let groups: Vec<&str> = stripped.split(seg_delimiter).collect();
-        let segments: Vec<String> = stripped
-            .split(seg_delimiter)
-            .map(|v| v.to_string())
-            .collect();
-
-        if segments.is_empty() {
-            return Err(EquipmentIdError::InvalidIdString(String::from(
-                "no code groups",
-            )));
-        }
-
-        if segments[0].is_empty() {
-            return Err(EquipmentIdError::InvalidIdString(String::from(
-                "no code groups",
-            )));
-        }
-
-        for s in segments.clone() {
-            if s.len() != group_len {
-                return Err(EquipmentIdError::InvalidIdString(String::from(
-                    "code group deviates in length",
-                )));
-            }
-        }
-
-        Ok(Self {
-            prefix,
-            segments,
-            seg_delimiter,
-            group_len,
-        })
+        Ok(Self { item_id })
     }
 }
 
 impl Display for EquipmentId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let delim = String::from(self.seg_delimiter);
-        let prefix = String::from(self.prefix);
-        let segs = self.segments.join(&delim);
-        let id = format!("{}{}", prefix, segs);
-
-        write!(f, "{}", id)
+        return self.item_id.fmt(f);
     }
 }
 
 impl Default for EquipmentId {
     fn default() -> Self {
-        Self {
-            prefix: '=',
-            segments: vec![String::from("001")],
-            seg_delimiter: '.',
-            group_len: 3,
-        }
+        // we carefully provide parameters secured at compile time
+        // to this call to ensure that it will not fail, unless
+        // something is fundamentally broken in which case we deliberatly panic
+        let item_id = PlantItemId::new(
+            EQUIPMENT_ID_PREFIX,
+            ID_SEGMENT_DELIMITER_DEFAULT,
+            ID_GROUP_LEN_DEFAULT,
+            "-001",
+        )
+        .unwrap();
+
+        return Self { item_id };
+    }
+}
+
+impl Debug for EquipmentId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        return self.item_id.fmt(f);
     }
 }
