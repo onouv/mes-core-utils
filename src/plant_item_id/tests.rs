@@ -7,15 +7,13 @@ fn can_be_created() {
 
     // group length 4
     let candidate1 = "+0100.0001";
-    let tool_id1 = PlantItemId::new('+', seg_delimiter, 4, candidate1)
-        .unwrap_or_else(|error| panic!("{}", error));
+    let tool_id1 = PlantItemId::new('+', seg_delimiter, 4, candidate1).unwrap();
     let id1 = format!("{}", tool_id1);
     assert_eq!(id1, candidate1);
 
     // group length 2, prefix =
     let candidate2 = "=01.01";
-    let tool_id2 = PlantItemId::new('=', seg_delimiter, 2, candidate2)
-        .unwrap_or_else(|error| panic!("{}", error));
+    let tool_id2 = PlantItemId::new('=', seg_delimiter, 2, candidate2).unwrap();
     let id2 = format!("{}", tool_id2);
     assert_eq!(id2, candidate2);
 }
