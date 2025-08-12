@@ -15,6 +15,7 @@ pub struct EquipmentId {
 
 impl EquipmentId {
     pub fn new(seg_delimiter: char, group_len: usize, id: &str) -> Result<Self, PlantItemIdError> {
+        if 
         let item_id = PlantItemId::new(seg_delimiter, id)?;
 
         Ok(Self { item_id })
