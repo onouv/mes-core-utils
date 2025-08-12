@@ -14,28 +14,20 @@ pub struct PlantItemId {
     prefix: char,
     segments: Vec<String>,
     seg_delimiter: char,
-    group_len: usize,
 }
 impl PlantItemId {
-    pub fn new(
-        prefix: char,
-        seg_delimiter: char,
-        group_len: usize,
-        id: &str,
-    ) -> Result<Self, PlantItemIdError> {
+    pub fn new(seg_delimiter: char, id: &str) -> Result<Self, PlantItemIdError> {
         if id.is_empty() {
             return Err(PlantItemIdError::EmptyIdString);
         }
 
-        let prefix_candidate = id.chars().nth(0).unwrap();
-        if prefix_candidate != prefix {
+        let prefix = id.chars().nth(0).unwrap();
+        if count_occurrence(prefix, id) > 1 {
             return Err(PlantItemIdError::InvalidIdString(String::from(
-                "mismatching prefix",
+                "prefix used more than once",
             )));
         }
-
         let stripped = id.trim_matches(prefix);
-        //let groups: Vec<&str> = stripped.split(seg_delimiter).collect();
         let segments: Vec<String> = stripped
             .split(seg_delimiter)
             .map(|v| v.to_string())
@@ -53,19 +45,21 @@ impl PlantItemId {
             )));
         }
 
+        let mut last_group_len = segments[0].len();
         for s in segments.clone() {
-            if s.len() != group_len {
+            let group_len = s.len();
+            if last_group_len != group_len {
                 return Err(PlantItemIdError::InvalidIdString(String::from(
                     "code group deviates in length",
                 )));
             }
+            last_group_len = group_len;
         }
 
         Ok(Self {
             prefix,
             segments,
             seg_delimiter,
-            group_len,
         })
     }
 }
@@ -79,4 +73,8 @@ impl Display for PlantItemId {
 
         write!(f, "{}", id)
     }
+}
+
+fn count_occurrence(c: char, s: &str) -> usize {
+    s.chars().filter(|v| *v == c).count()
 }

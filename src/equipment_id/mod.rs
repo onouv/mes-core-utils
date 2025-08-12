@@ -15,7 +15,7 @@ pub struct EquipmentId {
 
 impl EquipmentId {
     pub fn new(seg_delimiter: char, group_len: usize, id: &str) -> Result<Self, PlantItemIdError> {
-        let item_id = PlantItemId::new(EQUIPMENT_ID_PREFIX, seg_delimiter, group_len, id)?;
+        let item_id = PlantItemId::new(seg_delimiter, id)?;
 
         Ok(Self { item_id })
     }
@@ -32,13 +32,7 @@ impl Default for EquipmentId {
         // we carefully provide parameters secured at compile time
         // to this call to ensure that it will not fail, unless
         // something is fundamentally broken in which case we deliberatly panic
-        let item_id = PlantItemId::new(
-            EQUIPMENT_ID_PREFIX,
-            ID_SEGMENT_DELIMITER_DEFAULT,
-            ID_GROUP_LEN_DEFAULT,
-            "-001",
-        )
-        .unwrap();
+        let item_id = PlantItemId::new(ID_SEGMENT_DELIMITER_DEFAULT, "-001").unwrap();
 
         Self { item_id }
     }
