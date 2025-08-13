@@ -7,7 +7,6 @@ use std::fmt;
 use std::fmt::{Display, Formatter};
 
 pub static ID_SEGMENT_DELIMITER_DEFAULT: char = '.';
-pub static ID_GROUP_LEN_DEFAULT: usize = 4;
 
 #[derive(PartialEq, PartialOrd)]
 pub struct PlantItemId {
@@ -16,12 +15,18 @@ pub struct PlantItemId {
     seg_delimiter: char,
 }
 impl PlantItemId {
-    pub fn new(seg_delimiter: char, id: &str) -> Result<Self, PlantItemIdError> {
+    pub fn new(prefix: char, seg_delimiter: char, id: &str) -> Result<Self, PlantItemIdError> {
         if id.is_empty() {
             return Err(PlantItemIdError::EmptyIdString);
         }
 
-        let prefix = id.chars().nth(0).unwrap();
+        let prefix_candidate = id.chars().nth(0).unwrap();
+        if prefix_candidate != prefix {
+            return Err(PlantItemIdError::InvalidIdString(String::from(
+                "mismatching prefix",
+            )));
+        }
+
         if count_occurrence(prefix, id) > 1 {
             return Err(PlantItemIdError::InvalidIdString(String::from(
                 "prefix used more than once",
