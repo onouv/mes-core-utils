@@ -6,7 +6,7 @@ use std::fmt::{Debug, Display, Formatter};
 use super::plant_item_id_error::*;
 use crate::plant_item_id::{ID_SEGMENT_DELIMITER_DEFAULT, PlantItemId};
 
-pub const FUNCTION_ID_PREFIX: char = '-';
+pub const FUNCTION_ID_PREFIX: char = '=';
 
 #[derive(PartialEq, PartialOrd)]
 pub struct FunctionId {
