@@ -14,6 +14,10 @@ use std::fmt::{Display, Formatter};
 
 pub static ID_SEGMENT_DELIMITER_DEFAULT: char = '.';
 
+pub trait Creatable {
+    fn new(seg_delimiter: char, id: &str) -> Self; //Result<Self, IdError>;
+}
+
 #[derive(PartialEq, PartialOrd)]
 pub struct Id {
     prefix: char,
@@ -22,6 +26,22 @@ pub struct Id {
 }
 impl Id {
     pub fn new(prefix: char, seg_delimiter: char, id: &str) -> Result<Self, IdError> {
+        let segments = Id::validate_id(prefix, seg_delimiter, id)?;
+        Ok(Self {
+            prefix,
+            segments,
+            seg_delimiter,
+        })
+    }
+
+    /// checks that the id &str provided fulfills the formatting rules.
+    /// if it does, it returns the segments of this ID_SEGMENT_DELIMITER_DEFAULTed id for further use,
+    /// otherwise it returns an error describing the issue.
+    pub fn validate_id(
+        prefix: char,
+        seg_delimiter: char,
+        id: &str,
+    ) -> Result<Vec<String>, IdError> {
         if id.is_empty() {
             return Err(IdError::EmptyIdString);
         }
@@ -61,11 +81,7 @@ impl Id {
             last_group_len = group_len;
         }
 
-        Ok(Self {
-            prefix,
-            segments,
-            seg_delimiter,
-        })
+        Ok(segments)
     }
 }
 

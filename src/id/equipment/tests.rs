@@ -11,6 +11,12 @@ fn can_be_created() {
 }
 
 #[test]
+fn can_be_created_with_builder() {
+    let id = EquipmentId::builder()
+        .
+}
+
+#[test]
 #[should_panic(expected = "empty id string")]
 fn empty_cannot_be_created() {
     EquipmentId::new('/', "").unwrap_or_else(|error| panic!("{}", error));

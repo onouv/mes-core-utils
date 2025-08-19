@@ -19,6 +19,12 @@ impl FunctionId {
 
         Ok(Self { item_id })
     }
+
+    pub fn with_defaults(id: &str) -> Result<Self, IdError> {
+        let item_id = Id::new(FUNCTION_ID_PREFIX, ID_SEGMENT_DELIMITER_DEFAULT, id)?;
+
+        Ok(Self { item_id })
+    }
 }
 
 impl Display for FunctionId {
