@@ -26,13 +26,13 @@ fn empty_cannot_be_created() {
 }
 
 #[test]
-#[should_panic(expected = "code group deviates in length")]
+#[should_panic(expected = "segment deviates in length")]
 fn wrong_group_length_cannot_be_created() {
     EquipmentId::new("/", "-0001/0200/012").unwrap_or_else(|error| panic!("{}", error));
 }
 
 #[test]
-#[should_panic(expected = "no code groups")]
+#[should_panic(expected = "no segments")]
 fn lack_of_code_groups_cannot_be_created() {
     EquipmentId::new(ID_SEGMENT_DELIMITER_DEFAULT, "-").unwrap_or_else(|error| panic!("{}", error));
 }

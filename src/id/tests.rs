@@ -43,7 +43,7 @@ fn empty_cannot_be_created() {
 }
 
 #[test]
-#[should_panic(expected = "code group deviates in length")]
+#[should_panic(expected = "segment deviates in length")]
 fn wrong_group_length_cannot_be_created() {
     let seg_delimiter = ".";
     let candidate = "+0100.001";
@@ -51,7 +51,7 @@ fn wrong_group_length_cannot_be_created() {
 }
 
 #[test]
-#[should_panic(expected = "code group deviates in length")]
+#[should_panic(expected = "segment deviates in length")]
 fn wrong_delimiter_cannot_be_created() {
     let seg_delimiter = "*";
     let candidate = "+0100.0001*0010";
@@ -59,7 +59,7 @@ fn wrong_delimiter_cannot_be_created() {
 }
 
 #[test]
-#[should_panic(expected = "no code groups")]
+#[should_panic(expected = "no segments")]
 fn lack_of_code_groups_cannot_be_created() {
     let seg_delimiter = ".";
     let candidate = "+";

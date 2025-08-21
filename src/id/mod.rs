@@ -1,20 +1,29 @@
 pub mod id_error;
 pub use super::id_error::IdError;
 
-mod tests;
-
 pub mod equipment;
+pub use equipment::*;
+
 pub mod function;
+pub use function::*;
+
 pub mod location;
+pub use location::*;
+
+pub mod builder;
+use builder::*;
+
+mod tests;
 
 use std::fmt;
 use std::fmt::{Display, Formatter};
 
-pub mod builder;
-pub use builder::*;
-
+/// The canonical standard delimiter between two id segments
 pub static ID_SEGMENT_DELIMITER_DEFAULT: &str = ".";
 
+/// A type to formally identify entities in the mes system.
+/// This type is intended to be wrapped by user-facing types,
+/// rather than used directly.
 #[derive(PartialEq, PartialOrd)]
 pub struct Id {
     prefix: String,
@@ -46,6 +55,8 @@ pub struct IdBuilder {
 }
 
 impl IdBuilder {
+    /// Creates a new IdBuilder which is initialized to use the given
+    /// prefix and segment delimiter strings.
     fn new(prefix: &str, segment_delimiter: &str) -> Self {
         Self {
             prefix: String::from(prefix),
@@ -77,7 +88,7 @@ impl IdBuilder {
                 }
                 let postfix = String::from(post);
                 if postfix.is_empty() {
-                    return Err(IdError::InvalidIdString(String::from("no code groups")));
+                    return Err(IdError::InvalidIdString(String::from("no segments")));
                 }
 
                 let segments: Vec<String> = postfix
@@ -86,11 +97,11 @@ impl IdBuilder {
                     .collect();
 
                 if segments.is_empty() {
-                    return Err(IdError::InvalidIdString(String::from("no code groups")));
+                    return Err(IdError::InvalidIdString(String::from("no segments")));
                 }
 
                 if segments[0].is_empty() {
-                    return Err(IdError::InvalidIdString(String::from("no code groups")));
+                    return Err(IdError::InvalidIdString(String::from("no segments")));
                 }
 
                 let mut last_group_len = segments[0].len();
@@ -98,7 +109,7 @@ impl IdBuilder {
                     let group_len = s.len();
                     if last_group_len != group_len {
                         return Err(IdError::InvalidIdString(String::from(
-                            "code group deviates in length",
+                            "segment deviates in length",
                         )));
                     }
                     last_group_len = group_len;
@@ -124,7 +135,7 @@ impl IdBuilder {
             let group_len = s.len();
             if last_group_len != group_len {
                 return Err(IdError::InvalidIdString(String::from(
-                    "code group deviates in length",
+                    "segment deviates in length",
                 )));
             }
             last_group_len = group_len;

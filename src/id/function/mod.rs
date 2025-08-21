@@ -6,8 +6,12 @@ use std::fmt::{Debug, Display, Formatter};
 use super::id_error::IdError;
 use super::{Builder, ID_SEGMENT_DELIMITER_DEFAULT, Id, IdBuilder};
 
+/// The canonical standard prefix for a function
 pub const FUNCTION_ID_PREFIX: &str = "=";
 
+/// A type to formally identify functions.
+/// This struct wraps the more generic [Id] type and specializes
+/// it with a fixed prefix ([FUNCTION_ID_PREFIX]).
 #[derive(PartialEq, PartialOrd)]
 pub struct FunctionId {
     item_id: Id,
@@ -53,10 +57,18 @@ pub struct FunctionIdBuilder {
 }
 
 impl FunctionIdBuilder {
+    /// Creates a new builder, initialized to use [FUNCTION_ID_PREFIX] and
+    /// [ID_SEGMENT_DELIMITER_DEFAULT].
     pub fn new() -> Self {
         Self {
             builder: IdBuilder::new(FUNCTION_ID_PREFIX, ID_SEGMENT_DELIMITER_DEFAULT),
         }
+    }
+}
+
+impl Default for FunctionIdBuilder {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

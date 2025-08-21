@@ -9,33 +9,5 @@
 //! - provide insight to optimize OEE
 //!
 
-mod id;
-use crate::id::*;
-/*
-// Demo
-//
-//
-
-pub fn try_it() {
-    let f1 = FunctionId::default();
-    println!("{}", f1);
-
-    match FunctionId::new(ID_SEGMENT_DELIMITER_DEFAULT, "=100.010.25") {
-        Ok(f2) => {
-            println!("{}", f2);
-        }
-        Err(err) => {
-            println!("{}", err);
-        }
-    }
-
-    match EquipmentId::new("/", "-100/010/25") {
-        Ok(f3) => {
-            println!("{}", f3);
-        }
-        Err(err) => {
-            println!("{}", err);
-        }
-    }
-}
-*/
+pub mod id;
+pub use crate::id::*;

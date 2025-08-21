@@ -5,12 +5,12 @@ use std::fmt::{self, Debug, Display, Formatter};
 use super::id_error::IdError;
 use super::{Builder, ID_SEGMENT_DELIMITER_DEFAULT, Id, IdBuilder};
 
-/// The canocnical standard prefix for an equipment id.
+/// The canonical standard prefix for an equipment id.
 pub const EQUIPMENT_ID_PREFIX: &str = "-";
 
-/// A type to formally identify equipment
+/// A type to formally identify equipment.
 /// This struct wraps the more generic [Id] type and specializes
-/// it with a fixed prefix.
+/// it with a fixed prefix ([EQUIPMENT_ID_PREFIX]).
 #[derive(PartialEq, PartialOrd)]
 pub struct EquipmentId {
     item_id: Id,
@@ -62,10 +62,18 @@ pub struct EquipmentIdBuilder {
 }
 
 impl EquipmentIdBuilder {
+    /// Creates a new builder, initialized to use [EQUIPMENT_ID_PREFIX] and
+    /// [ID_SEGMENT_DELIMITER_DEFAULT].
     pub fn new() -> Self {
         Self {
             builder: IdBuilder::new(EQUIPMENT_ID_PREFIX, ID_SEGMENT_DELIMITER_DEFAULT),
         }
+    }
+}
+
+impl Default for EquipmentIdBuilder {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
