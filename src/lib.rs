@@ -11,7 +11,7 @@
 
 mod id;
 use crate::id::*;
-
+/*
 // Demo
 //
 //
@@ -29,7 +29,7 @@ pub fn try_it() {
         }
     }
 
-    match EquipmentId::new('/', "-100/010/25") {
+    match EquipmentId::new("/", "-100/010/25") {
         Ok(f3) => {
             println!("{}", f3);
         }
@@ -38,3 +38,4 @@ pub fn try_it() {
         }
     }
 }
+*/

@@ -4,9 +4,9 @@ use std::fmt;
 use std::fmt::{Debug, Display, Formatter};
 
 use super::id_error::IdError;
-use super::{ID_SEGMENT_DELIMITER_DEFAULT, Id};
+use super::{Builder, ID_SEGMENT_DELIMITER_DEFAULT, Id, IdBuilder};
 
-pub const FUNCTION_ID_PREFIX: char = '=';
+pub const FUNCTION_ID_PREFIX: &str = "=";
 
 #[derive(PartialEq, PartialOrd)]
 pub struct FunctionId {
@@ -14,14 +14,12 @@ pub struct FunctionId {
 }
 
 impl FunctionId {
-    pub fn new(seg_delimiter: char, id: &str) -> Result<Self, IdError> {
-        let item_id = Id::new(FUNCTION_ID_PREFIX, seg_delimiter, id)?;
-
-        Ok(Self { item_id })
+    pub fn builder() -> FunctionIdBuilder {
+        FunctionIdBuilder::new()
     }
 
-    pub fn with_defaults(id: &str) -> Result<Self, IdError> {
-        let item_id = Id::new(FUNCTION_ID_PREFIX, ID_SEGMENT_DELIMITER_DEFAULT, id)?;
+    pub fn new(seg_delimiter: &str, id: &str) -> Result<Self, IdError> {
+        let item_id = Id::new(FUNCTION_ID_PREFIX, seg_delimiter, id)?;
 
         Ok(Self { item_id })
     }
@@ -47,5 +45,35 @@ impl Default for FunctionId {
 impl Debug for FunctionId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         self.item_id.fmt(f)
+    }
+}
+
+pub struct FunctionIdBuilder {
+    builder: IdBuilder,
+}
+
+impl FunctionIdBuilder {
+    pub fn new() -> Self {
+        Self {
+            builder: IdBuilder::new(FUNCTION_ID_PREFIX, ID_SEGMENT_DELIMITER_DEFAULT),
+        }
+    }
+}
+
+impl Builder for FunctionIdBuilder {
+    type IdType = FunctionId;
+
+    fn id(&mut self, id: &str) -> Result<(), IdError> {
+        return self.builder.id(id);
+    }
+
+    fn add_segment(&mut self, segment: &str) -> Result<(), IdError> {
+        self.builder.add_segment(segment)
+    }
+
+    fn build(self) -> Self::IdType {
+        FunctionId {
+            item_id: self.builder.build(),
+        }
     }
 }

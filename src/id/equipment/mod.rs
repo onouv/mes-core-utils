@@ -1,13 +1,12 @@
 mod tests;
 
-use std::fmt::{self, format};
-use std::fmt::{Debug, Display, Formatter};
+use std::fmt::{self, Debug, Display, Formatter};
 
 use super::id_error::IdError;
-use super::{ID_SEGMENT_DELIMITER_DEFAULT, Id};
+use super::{Builder, ID_SEGMENT_DELIMITER_DEFAULT, Id, IdBuilder};
 
 /// The canocnical standard prefix for an equipment id.
-pub const EQUIPMENT_ID_PREFIX: char = '-';
+pub const EQUIPMENT_ID_PREFIX: &str = "-";
 
 /// A type to formally identify equipment
 /// This struct wraps the more generic [Id] type and specializes
@@ -22,7 +21,7 @@ impl EquipmentId {
         EquipmentIdBuilder::new()
     }
 
-    pub fn new(seg_delimiter: char, id: &str) -> Result<Self, IdError> {
+    pub fn new(seg_delimiter: &str, id: &str) -> Result<Self, IdError> {
         let item_id = Id::new(EQUIPMENT_ID_PREFIX, seg_delimiter, id)?;
 
         Ok(Self { item_id })
@@ -59,46 +58,32 @@ impl Debug for EquipmentId {
 }
 
 pub struct EquipmentIdBuilder {
-    prefix: char,
-    seg_delimiter: char,
-    segments: Vec<String>,
+    builder: IdBuilder,
 }
 
 impl EquipmentIdBuilder {
     pub fn new() -> Self {
         Self {
-            prefix: EQUIPMENT_ID_PREFIX,
-            seg_delimiter: ID_SEGMENT_DELIMITER_DEFAULT,
-            segments: vec![String::from("001")],
+            builder: IdBuilder::new(EQUIPMENT_ID_PREFIX, ID_SEGMENT_DELIMITER_DEFAULT),
         }
     }
-    pub fn with_prefix(mut self, prefix: char) -> Self {
-        self.prefix = prefix;
-        self
-    }
+}
 
-    pub fn with_segment_delimiter(mut self, seg_delimiter: char) -> Self {
-        self.seg_delimiter = seg_delimiter;
-        self
-    }
+impl Builder for EquipmentIdBuilder {
+    type IdType = EquipmentId;
 
-    /// Overwrites the existing id field. Must provide a string beginning with correct prefix and
-    /// using correct segment separators to avoid failing
-    pub fn id(mut self, id: &str) -> Result<Self, IdError> {
-        let segments = Id::validate_id(self.prefix, self.seg_delimiter, id)?;
-        self.segments = segments;
-
-        Ok(self)
+    fn id(&mut self, id: &str) -> Result<(), IdError> {
+        return self.builder.id(id);
     }
 
     /// Adds a segment to the id after validating the new segment follows the rules.
-    pub fn added_segment(mut self, segment: &str) -> Result<Self, IdError> {
-        Ok(self)
+    fn add_segment(&mut self, segment: &str) -> Result<(), IdError> {
+        self.builder.add_segment(segment)
     }
 
-    pub fn build(self) -> Result<EquipmentId, IdError> {
-        let item_id = Id::new(self.prefix, self.seg_delimiter, self.id.as_str())?;
-
-        Ok(EquipmentId { item_id })
+    fn build(self) -> Self::IdType {
+        EquipmentId {
+            item_id: self.builder.build(),
+        }
     }
 }
