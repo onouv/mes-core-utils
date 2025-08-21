@@ -73,7 +73,7 @@ impl Builder for EquipmentIdBuilder {
     type IdType = EquipmentId;
 
     fn id(&mut self, id: &str) -> Result<(), IdError> {
-        return self.builder.id(id);
+        self.builder.id(id)
     }
 
     /// Adds a segment to the id after validating the new segment follows the rules.

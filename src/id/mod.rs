@@ -5,6 +5,7 @@ mod tests;
 
 pub mod equipment;
 pub mod function;
+pub mod location;
 
 use std::fmt;
 use std::fmt::{Display, Formatter};
