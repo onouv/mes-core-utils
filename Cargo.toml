@@ -1,5 +1,5 @@
 [package]
-name = "mes-core-utils"
+name = "mes_core_utils"
 version = "0.1.0"
 edition = "2024"
 

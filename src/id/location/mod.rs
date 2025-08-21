@@ -19,7 +19,7 @@ pub struct LocationId {
 
 impl LocationId {
     pub fn builder() -> LocationIdBuilder {
-        LocationIdBuilder::new()
+        LocationIdBuilder::default()
     }
 
     pub fn new(seg_delimiter: &str, id: &str) -> Result<Self, IdError> {
