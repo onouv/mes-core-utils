@@ -3,7 +3,8 @@ use super::*;
 
 #[test]
 fn can_be_created() {
-    let id1 = EquipmentId::new('/', "-001/001").unwrap();
+    println!("Huhu!");
+    let id1 = EquipmentId::new("/", "-001/001").unwrap();
     assert_eq!(format!("{}", id1), "-001/001");
 
     let id2 = EquipmentId::new(ID_SEGMENT_DELIMITER_DEFAULT, "-1000.0002.0053").unwrap();
@@ -11,15 +12,23 @@ fn can_be_created() {
 }
 
 #[test]
+fn can_be_created_with_builder() {
+    let mut builder = EquipmentId::builder();
+    let _ = builder.id("-200.124");
+    let id = builder.build();
+    assert_eq!(format!("{}", id), "-200.124");
+}
+
+#[test]
 #[should_panic(expected = "empty id string")]
 fn empty_cannot_be_created() {
-    EquipmentId::new('/', "").unwrap_or_else(|error| panic!("{}", error));
+    EquipmentId::new("/", "").unwrap_or_else(|error| panic!("{}", error));
 }
 
 #[test]
 #[should_panic(expected = "code group deviates in length")]
 fn wrong_group_length_cannot_be_created() {
-    EquipmentId::new('/', "-0001/0200/012").unwrap_or_else(|error| panic!("{}", error));
+    EquipmentId::new("/", "-0001/0200/012").unwrap_or_else(|error| panic!("{}", error));
 }
 
 #[test]
@@ -31,7 +40,7 @@ fn lack_of_code_groups_cannot_be_created() {
 #[test]
 #[should_panic(expected = "mismatching prefix")]
 fn wrong_prefix_cannot_be_created() {
-    EquipmentId::new('/', "+001.001").unwrap_or_else(|error| panic!("{}", error));
+    EquipmentId::new("/", "+001.001").unwrap_or_else(|error| panic!("{}", error));
 }
 
 #[test]

@@ -5,7 +5,6 @@ use std::fmt::{Display, Formatter};
 pub enum IdError {
     EmptyIdString,
     InvalidIdString(String),
-    Uninitialized,
 }
 
 impl Display for IdError {
@@ -13,7 +12,6 @@ impl Display for IdError {
         match self {
             IdError::EmptyIdString => write!(f, "empty id string"),
             IdError::InvalidIdString(s) => write!(f, "invalid id string: {}", s),
-            IdError::Uninitialized => write!(f, "uninitialized id string"),
         }
     }
 }
