@@ -6,6 +6,7 @@
 use super::IdError;
 
 pub trait Builder {
+    /// the concrete type to be eventually created by the builder implementation
     type IdType;
 
     /// Overwrites the existing id field. Must provide a string beginning with correct prefix and
